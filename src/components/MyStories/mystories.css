@@ -1,6 +1,17 @@
 @media screen and (max-width:600px){
     .card{
-        width: 100% !important;
+        width: auto !important;
         box-shadow: none !important;
     }
+    .car{
+        width: 24rem !important;
+        box-shadow: none !important;
+    }
+}
+button:focus,
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none !important;
+    box-shadow: none !important;
 }

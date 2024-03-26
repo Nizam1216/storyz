@@ -1,0 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@600&family=Poppins:wght@200;300;400;500&family=Public+Sans:wght@200;500&family=Roboto:ital,wght@1,100&display=swap');
+@import url('primeicons/primeicons.css');
+@import url("primereact/resources/themes/lara-light-indigo/theme.css");
+@import url("primereact/resources/primereact.min.css");
+@import url("/node_modules/primeflex/primeflex.css");

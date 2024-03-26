@@ -8,6 +8,8 @@ import MyStories from "./components/MyStories";
 import AddStory from "./components/AddStory";
 import EditStory from "./components/EditStory";
 import ReadMore from "./components/ReadMore";
+import About from "./components/About";
+import Bug from "./components/Bug";
 // import { useEffect, useState } from "react";
 const App = () => {
   // const [first, setfirst] = useState(0);
@@ -28,6 +30,8 @@ const App = () => {
           <Route path="/" element={<Dashboard />} />
           <Route path="/signup" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/report a bug" element={<Bug />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/my-stories" element={<MyStories />} />
           <Route path="/add-new-story" element={<AddStory />} />

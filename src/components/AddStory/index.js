@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Navbar from "../Navbar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Toast } from "primereact/toast";
 
 const AddStory = () => {
   const navigate = useNavigate();
@@ -10,6 +11,8 @@ const AddStory = () => {
     description: "",
     tag: "",
   });
+  const toast = useRef(null); // Ref for toast
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -25,12 +28,19 @@ const AddStory = () => {
         }
       );
       console.log(response.data);
-      alert(response.data.message);
-      navigate("/my-stories");
+      showToast("success", "Success", response.data.message);
+      setFormData({ name: "", description: "", tag: "" });
     } catch (error) {
       console.log(error);
+      showToast("error", "Error", "Failed to Add Story");
     }
   };
+
+  // Function to show the toast
+  const showToast = (severity, summary, detail) => {
+    toast.current.show({ severity, summary, detail });
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     // If the input field is the description textarea
@@ -47,8 +57,11 @@ const AddStory = () => {
   return (
     <>
       <Navbar />
+      <Toast ref={toast} />
       <form className="container mt-5 pt-5" onSubmit={handleSubmit}>
-        <h1 className="h3 mb-3 fw-normal">Write Your Story</h1>
+        <h1 className="h3 mb-3 fw-normal" style={{ fontFamily: "poppins" }}>
+          Add New Story
+        </h1>
         <div className="form-floating my-3">
           <input
             type="text"
@@ -84,9 +97,10 @@ const AddStory = () => {
             id="floatingGenre"
             name="tag" // Set name attribute to tag
             onChange={handleChange}
-            value={formData.tag} // Set value to formData.tag
+            value={formData.tag}
+            defaultValue="General" // Set value to formData.tag
           >
-            <option value="Genaral">Default</option>
+            <option value="General">General</option>
             <option value="Fantasy">Fantasy</option>
             <option value="Science Fiction">Science Fiction</option>
             <option value="Mystery">Mystery</option>

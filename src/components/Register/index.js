@@ -1,7 +1,8 @@
-import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../Navbar";
+import axios from "axios";
+import { Toast } from "primereact/toast";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -10,9 +11,21 @@ const Register = () => {
     email: "",
     password: "",
   });
+  const toast = useRef(null);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if (formData.name.length < 6) {
+        showToast("error", "Error", "Name must be at least 6 characters");
+        return;
+      }
+
+      if (formData.password.length < 6) {
+        showToast("error", "Error", "Password must be at least 6 characters");
+        return;
+      }
+
       const response = await axios.post(
         "https://storyzserver-l5ct.vercel.app/api/auth/register",
         formData
@@ -24,14 +37,23 @@ const Register = () => {
       console.log(error);
     }
   };
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  // Function to show the toast
+  const showToast = (severity, summary, detail) => {
+    toast.current.show({ severity, summary, detail });
+  };
+
   return (
     <>
       <Navbar />
-      <form className="container  mt-5 pt-5" onSubmit={handleSubmit}>
-        <h1 className="h3 mb-3 fw-normal">Please Register</h1>
+      <form className="container mt-5 pt-5" onSubmit={handleSubmit}>
+        <h1 className="h3 mb-3 fw-normal" style={{ fontFamily: "poppins" }}>
+          Please Register
+        </h1>
         <div className="form-floating my-3">
           <input
             type="text"
@@ -67,13 +89,23 @@ const Register = () => {
           <label htmlFor="floatingPassword1">Password</label>
         </div>
 
-        <button className="w-100 btn btn-lg btn-primary my-3" type="submit">
+        <button
+          className="w-100 btn btn-lg btn-primary my-3"
+          type="submit"
+          style={{ fontFamily: "poppins" }}
+        >
           Sign up
         </button>
-        <h3>
-          already have an account? <Link to="/login">sign in</Link>
+        <h3 style={{ fontFamily: "poppins" }}>
+          already have an account?{" "}
+          <Link to="/login" style={{ fontFamily: "poppins" }}>
+            sign in
+          </Link>
         </h3>
       </form>
+
+      {/* PrimeReact Toast component */}
+      <Toast ref={toast} />
     </>
   );
 };
