@@ -16,7 +16,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/auth/login",
+        "https://storyzserver.vercel.app/api/auth/login",
         formData
       );
       localStorage.setItem("authToken", response.data.authToken);

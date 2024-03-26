@@ -21,7 +21,7 @@ const EditStory = () => {
         const authToken = localStorage.getItem("authToken");
         const response = await axios.post(
           // Use GET method to fetch a single note by its ID
-          `https://storyzserver-l5ct.vercel.app/api/notes/readnote/${id}`, // Use template literals to inject the ID into the URL
+          `https://storyzserver.vercel.app/api/notes/readnote/${id}`, // Use template literals to inject the ID into the URL
           {
             headers: {
               "auth-token": authToken,
@@ -47,7 +47,7 @@ const EditStory = () => {
     try {
       const authToken = localStorage.getItem("authToken");
       const response = await axios.put(
-        `https://storyzserver-l5ct.vercel.app/api/notes/updatenote/${id}`,
+        `https://storyzserver.vercel.app/api/notes/updatenote/${id}`,
         formData,
         {
           headers: {

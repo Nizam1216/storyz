@@ -16,7 +16,7 @@ const ReadMore = () => {
         const authToken = localStorage.getItem("authToken");
         const response = await axios.post(
           // Use GET method to fetch a single note by its ID
-          `http://localhost:8080/api/notes/readnote/${id}`, // Use template literals to inject the ID into the URL
+          `https://storyzserver.vercel.app/api/notes/readnote/${id}`, // Use template literals to inject the ID into the URL
           {
             headers: {
               "auth-token": authToken,
@@ -41,7 +41,7 @@ const ReadMore = () => {
       if (localStorage.getItem("email")) {
         const authToken = localStorage.getItem("authToken");
         const response = await axios.post(
-          `http://localhost:8080/api/notes/addcomment/${id}`,
+          `https://storyzserver.vercel.app/api/notes/addcomment/${id}`,
           {
             text: comment,
             email: localStorage.getItem("email"), // Extract email from the authentication token
@@ -56,7 +56,7 @@ const ReadMore = () => {
         console.log(response.data);
         // Refresh the note to display the updated comments
         const updatedNote = await axios.post(
-          `https://storyzserver-l5ct.vercel.app/api/notes/readnote/${id}`,
+          `https://storyzserver.vercel.app/api/notes/readnote/${id}`,
           {},
           {
             headers: {

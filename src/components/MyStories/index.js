@@ -14,7 +14,7 @@ const MyStories = () => {
       try {
         const authToken = localStorage.getItem("authToken");
         const response = await axios.post(
-          "http://localhost:8080/api/notes/fetchallnotes",
+          "https://storyzserver.vercel.app/api/notes/fetchallnotes",
           {},
           {
             headers: {
@@ -39,7 +39,7 @@ const MyStories = () => {
     try {
       const authToken = localStorage.getItem("authToken");
       const response = await axios.delete(
-        `https://storyzserver-l5ct.vercel.app/api/notes/deletenote/${_id}`,
+        `https://storyzserver.vercel.app/api/notes/deletenote/${_id}`,
         {
           headers: {
             "auth-token": authToken,

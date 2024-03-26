@@ -14,7 +14,7 @@ const Dashboard = () => {
       try {
         const authToken = localStorage.getItem("authToken");
         const response = await axios.post(
-          "http://localhost:8080/api/notes/populatenotes",
+          "https://storyzserver.vercel.app/api/notes/populatenotes",
           {},
           {
             headers: {
