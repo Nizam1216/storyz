@@ -25,6 +25,11 @@
         box-shadow: none !important;
         
     }
+    .vhng{
+        font-size: 15px;
+        margin-top: 68%;
+        background-color: rgb(44, 41, 41);
+    }
 }
 button:focus,
 input:focus,

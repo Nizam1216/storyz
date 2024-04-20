@@ -152,25 +152,21 @@ const MyStories = () => {
                           <div className="d-flex flex-row justify-content-between gap-2  mt-5 pt-5 align-items-center dvv">
                             <Link
                               to={`/edit-story/${item._id}`}
-                              className="pi pi-pencil mr-4 -ml-2 vhng "
+                              className="pi pi-pencil mr-4 -ml-0 vhng "
                               style={{
                                 textDecoration: "none",
                                 color: "green",
-                                fontSize: "19px",
-                                backgroundColor: "black",
+
                                 borderRadius: "5px",
-                                marginTop: "90%",
                               }}
                             ></Link>
                             <i
                               onClick={() => deleteNote(item._id)}
                               style={{
-                                fontSize: "20px",
                                 cursor: "pointer",
                                 color: "red",
-                                backgroundColor: "black",
+
                                 borderRadius: "5px",
-                                marginTop: "90%",
                               }}
                               className="pi pi-trash vhng"
                             ></i>
