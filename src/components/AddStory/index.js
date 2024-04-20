@@ -146,6 +146,7 @@ const AddStory = () => {
           className="w-100 btn btn-lg btn-primary my-3"
           type="button"
           onClick={addChapter}
+          disabled={loading}
         >
           Add Chapter
         </button>
@@ -178,7 +179,6 @@ const AddStory = () => {
           disabled={loading} // Disable button when loading
         >
           {loading ? <i className="pi pi-spin pi-spinner"></i> : "Add Story"}{" "}
-          {/* Show loader text when loading */}
         </button>
       </form>
     </>
