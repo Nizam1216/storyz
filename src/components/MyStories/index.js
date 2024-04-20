@@ -4,17 +4,19 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { Toast } from "primereact/toast";
 import "./mystories.css";
+import image from "../../images/purple.jpg";
+
 const MyStories = () => {
   const [populationArray, setPopulationArray] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); // Add loading state
-  const toast = useRef(null); // Ref for toast
+  const [isLoading, setIsLoading] = useState(true);
+  const toast = useRef(null);
 
   useEffect(() => {
     const fetchAllNotes = async () => {
       try {
         const authToken = localStorage.getItem("authToken");
         const response = await axios.post(
-          "https://storyzserver.vercel.app/api/notes/fetchallnotes",
+          "https://storyzserver-nizam.vercel.app/api/notes/fetchallnotes",
           {},
           {
             headers: {
@@ -25,21 +27,21 @@ const MyStories = () => {
         );
         console.log(response.data);
         setPopulationArray(response.data);
-        setIsLoading(false); // Set loading to false when data is fetched
+        setIsLoading(false);
       } catch (error) {
         console.log(error.message);
-        setIsLoading(false); // Set loading to false on error
+        setIsLoading(false);
       }
     };
 
     fetchAllNotes();
-  }, []); // Empty dependency array to run the effect only once on mount
+  }, []);
 
   const deleteNote = async (_id) => {
     try {
       const authToken = localStorage.getItem("authToken");
-      const response = await axios.delete(
-        `https://storyzserver.vercel.app/api/notes/deletenote/${_id}`,
+      await axios.delete(
+        `https://storyzserver-nizam.vercel.app/api/notes/deletenote/${_id}`,
         {
           headers: {
             "auth-token": authToken,
@@ -47,7 +49,6 @@ const MyStories = () => {
           },
         }
       );
-      console.log(response.data);
       setPopulationArray(populationArray.filter((item) => item._id !== _id));
       showToast("success", "Success", "Story Deleted Successfully");
     } catch (error) {
@@ -56,17 +57,21 @@ const MyStories = () => {
     }
   };
 
-  // Function to show the toast
   const showToast = (severity, summary, detail) => {
-    toast.current.show({ severity, summary, detail });
+    if (toast.current) {
+      toast.current.show({ severity, summary, detail });
+    }
   };
 
   return (
     <>
       <Navbar />
-      <div className="container d-flex flex-column mt-5 justify-content-center align-items-center">
+      <div className="container mt-5">
         {isLoading ? (
-          <i className="pi pi-spin pi-spinner" style={{ fontSize: "2rem" }}></i>
+          <i
+            className="pi pi-spin pi-spinner d-flex justify-content-center align-items-center"
+            style={{ fontSize: "2rem", height: "50vh" }}
+          ></i>
         ) : (
           <>
             {populationArray.length < 1 ? (
@@ -75,101 +80,136 @@ const MyStories = () => {
                 <Link to="/add-new-story">Write a Story</Link>
               </>
             ) : (
-              populationArray.map((item) => (
-                <div
-                  className="card mb-2 shadow p-1 mb-5 bg-body-tertiary rounded"
-                  style={{ width: "38rem" }}
-                  key={item._id}
-                >
-                  <div className="card-body">
-                    <div className="d-flex justify-content-end">
-                      <p
-                        className="mx-3"
-                        style={{
-                          height: "25px",
-                          display: "flex",
-                          alignItems: "center",
-                          marginTop: "-15px",
-                          marginRight: "-15px",
-                        }}
-                      >
-                        <i className="pi pi-eye mt-1"></i>
-                        {item.views}
-                      </p>
-                      <p
-                        className=" bg-danger"
-                        style={{
-                          width: "fit-content",
-                          height: "25px",
-                          color: "white",
-                          paddingLeft: "5px",
-                          paddingRight: "5px",
-                          borderRadius: "4px",
-                          marginTop: "-15px",
-                          marginRight: "-15px",
-                          fontFamily: "poppins",
-                        }}
-                      >
-                        {item.tag}
-                      </p>
-                    </div>
-
-                    <h5
-                      className="card-title"
-                      style={{ fontFamily: "poppins" }}
-                    >
-                      {item.name}
-                    </h5>
-                    <p className="card-text" style={{ fontFamily: "roboto" }}>
-                      Written By :{" "}
-                      <span style={{ fontFamily: "poppins", color: "grey" }}>
-                        {item.userEmail}
-                      </span>{" "}
-                    </p>
-                    <p
-                      className="card-text"
+              <div className="flex flex-wrap gap-3">
+                {populationArray.map((item) => (
+                  <div
+                    className="flex flex-column"
+                    style={{ width: "30%" }}
+                    key={item._id}
+                  >
+                    <Link
+                      to={`/read-story/${item._id}`}
                       style={{
                         fontFamily: "poppins",
-                        fontWeight: "200",
-                        color: "black",
+                        width: "100%",
+                        textDecoration: "none",
                       }}
                     >
-                      {item.description?.slice(0, 300)}
-                    </p>
-                    <div className="d-flex justify-content-between w-full">
-                      <Link
-                        to={`/read-story/${item._id}`}
-                        className="btn btn-dark"
-                        style={{ fontFamily: "poppins" }}
+                      <div
+                        className="card mb-2 shadow p-1 mb-5 rounded something "
+                        style={{
+                          width: "100%",
+                          backgroundImage: item.image
+                            ? `url(${item.image})`
+                            : `url(${image})`,
+
+                          backgroundSize: "cover",
+                        }}
                       >
-                        Read More
-                      </Link>
-                      <div className="d-flex">
-                        <Link
-                          to={`/edit-story/${item._id}`}
-                          className="pi pi-pencil mx-3"
-                          style={{
-                            textDecoration: "none",
-                            color: "black",
-                            fontSize: "22px",
-                          }}
-                        ></Link>
-                        <i
-                          onClick={() => deleteNote(item._id)}
-                          style={{ fontSize: "22px", cursor: "pointer" }}
-                          className="pi pi-trash"
-                        ></i>
+                        <div className="card-body">
+                          <div className="d-flex justify-content-between">
+                            <p
+                              className="-ml-1"
+                              style={{
+                                height: "10px",
+                                display: "flex",
+                                alignItems: "center",
+                                marginTop: "-3px",
+                                marginRight: "-3px",
+                                fontSize: "8px",
+                                color: "white",
+                              }}
+                            >
+                              <i
+                                className="pi pi-eye mt-0"
+                                style={{
+                                  fontSize: "6px",
+                                  color: "white",
+                                  marginRight: "2px",
+                                }}
+                              ></i>{" "}
+                              {item.views}
+                            </p>
+                            <p
+                              className=" bg-danger"
+                              style={{
+                                width: "fit-content",
+                                height: "10px",
+                                color: "white",
+                                paddingLeft: "5px",
+                                paddingRight: "5px",
+                                borderRadius: "4px",
+                                marginTop: "-3px",
+                                marginRight: "-3px",
+                                fontFamily: "poppins",
+                                fontSize: "6px",
+                              }}
+                            >
+                              {item.tag}
+                            </p>
+                          </div>
+
+                          <div className="d-flex flex-row justify-content-between gap-5 -ml-2 mt-5 pt-5 align-items-center dvv">
+                            <Link
+                              to={`/edit-story/${item._id}`}
+                              className="pi pi-pencil mr-4 -ml-2 vhng "
+                              style={{
+                                textDecoration: "none",
+                                color: "green",
+                                fontSize: "19px",
+                                backgroundColor: "black",
+                                borderRadius: "5px",
+                                marginTop: "90%",
+                              }}
+                            ></Link>
+                            <i
+                              onClick={() => deleteNote(item._id)}
+                              style={{
+                                fontSize: "20px",
+                                cursor: "pointer",
+                                color: "red",
+                                backgroundColor: "black",
+                                borderRadius: "5px",
+                                marginTop: "90%",
+                              }}
+                              className="pi pi-trash vhng"
+                            ></i>
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                    </Link>
+                    <Link
+                      to={`/read-story/${item._id}`}
+                      style={{
+                        fontFamily: "poppins",
+                        width: "100%",
+                        textDecoration: "none",
+                        color: "rgb(53, 46, 46)",
+                      }}
+                    >
+                      <p
+                        className="cardname_title"
+                        style={{
+                          fontSize: "10px",
+                          marginTop: "-25%",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          textAlign: "center",
+                        }}
+                      >
+                        {item.title?.slice(0, 14) +
+                          (item.title?.length > 14 ? "..." : "")}
+                      </p>
+                    </Link>
                   </div>
-                </div>
-              ))
+                ))}
+              </div>
             )}
           </>
         )}
       </div>
 
-      {/* PrimeReact Toast component */}
       <Toast ref={toast} />
     </>
   );

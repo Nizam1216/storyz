@@ -1,11 +1,29 @@
 @media screen and (max-width:600px){
+    body {
+        overflow-x: hidden; /* Hide vertical scrollbar */
+      }
+    .something{
+        height: 180px;
+    }
     .card{
         width: auto !important;
         box-shadow: none !important;
+       
+
+    }
+    .new > .card{
+        border: none !important;
+    }
+    .card-body{
+        padding: 0px !important;
+    }
+    .rounded{
+        border-color:white ;
     }
     .car{
-        width: 24rem !important;
+        width: 4rem !important;
         box-shadow: none !important;
+        
     }
 }
 button:focus,
@@ -14,4 +32,40 @@ select:focus,
 textarea:focus {
     outline: none !important;
     box-shadow: none !important;
+}
+@media screen and (min-width:600px){
+.anc>.card{
+    height: auto ;
+    border: none;
+    
+}
+.new > .card{
+    height: 20% !important;
+    border: none !important;
+}
+.anc>.card-body{
+    height: auto ;
+}
+.card{
+    height: 540px ;
+    
+}
+
+.cardname_title{
+    margin-top: 0px !important;
+    font-size: large !important;  
+}
+.vhng{
+color: black;
+margin-top: 95% !important;
+padding-top: 0% !important;
+font-size: 30px !important;
+}
+.dvv{
+    margin-top: 30% !important;
+    padding-top: 0 !important;
+}
+.sm{
+    border: none !important;
+}
 }

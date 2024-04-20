@@ -3,10 +3,11 @@ import Navbar from "../Navbar";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { Toast } from "primereact/toast";
-
+import "../MyStories/mystories.css";
 const ReadMore = () => {
   const { id } = useParams();
   const [note, setNote] = useState("");
+  const [chapterIndex, setChapterIndex] = useState(0); // State to track the current chapter index
   const [comment, setComment] = useState("");
   const toast = useRef(null);
 
@@ -15,48 +16,7 @@ const ReadMore = () => {
       try {
         const authToken = localStorage.getItem("authToken");
         const response = await axios.post(
-          // Use GET method to fetch a single note by its ID
-          `https://storyzserver.vercel.app/api/notes/readnote/${id}`, // Use template literals to inject the ID into the URL
-          {
-            headers: {
-              "auth-token": authToken,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        setNote(response.data); // Set the fetched note in the state
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchNote();
-  }, [id]);
-
-  const handleSubmitComment = async (e) => {
-    e.preventDefault();
-
-    try {
-      if (localStorage.getItem("email")) {
-        const authToken = localStorage.getItem("authToken");
-        const response = await axios.post(
-          `https://storyzserver.vercel.app/api/notes/addcomment/${id}`,
-          {
-            text: comment,
-            email: localStorage.getItem("email"), // Extract email from the authentication token
-          },
-          {
-            headers: {
-              "auth-token": authToken,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        console.log(response.data);
-        // Refresh the note to display the updated comments
-        const updatedNote = await axios.post(
-          `https://storyzserver.vercel.app/api/notes/readnote/${id}`,
+          `https://storyzserver-nizam.vercel.app/api/notes/readnote/${id}`,
           {},
           {
             headers: {
@@ -66,7 +26,46 @@ const ReadMore = () => {
           }
         );
 
-        setNote(updatedNote.data);
+        setNote(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchNote();
+  }, [id, comment]);
+  const handleSubmitComment = async (e) => {
+    e.preventDefault();
+
+    try {
+      if (localStorage.getItem("email")) {
+        const authToken = localStorage.getItem("authToken");
+        const response = await axios.post(
+          `https://storyzserver-nizam.vercel.app/api/notes/addcomment/${id}`,
+          {
+            text: comment,
+            email: localStorage.getItem("email"),
+          },
+          {
+            headers: {
+              "auth-token": authToken,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        console.log(response);
+        // const updatedNote = await axios.post(
+        //   `https://storyzserver.vercel.app/api/notes/readnote/${id}`,
+        //   {},
+        //   {
+        //     headers: {
+        //       "auth-token": authToken,
+        //       "Content-Type": "application/json",
+        //     },
+        //   }
+        // );
+
+        // setNote(updatedNote.data);
         toast.current.show({
           severity: "success",
           summary: "Success",
@@ -90,80 +89,65 @@ const ReadMore = () => {
     }
   };
 
-  const formattedDescription = note.description
-    ?.split("\n")
-    .map((line, index) => (
-      <React.Fragment key={index}>
-        {line}
-        <br />
-      </React.Fragment>
-    ));
+  const goToPreviousChapter = () => {
+    if (chapterIndex > 0) {
+      setChapterIndex(chapterIndex - 1);
+    }
+  };
+
+  const goToNextChapter = () => {
+    if (chapterIndex < note.chapters.length - 1) {
+      setChapterIndex(chapterIndex + 1);
+    }
+  };
+
   return (
     <>
       <Navbar />
-      <div className="container d-flex flex-column mt-5 justify-content-center align-items-center">
+      <div className="container mt-5 anc">
         {note ? (
           <>
             <div
-              className="card mb-5 bg-body-tertiary rounded"
-              style={{ width: "38rem" }}
+              className="card mb-5 bg-body-tertiary rounded sm"
+              style={{ width: "100%", height: "auto" }}
             >
               <div className="card-body">
-                <div className="d-flex justify-content-end">
-                  <p
-                    className="mx-3"
-                    style={{
-                      height: "25px",
-                      display: "flex",
-                      alignItems: "cenetr",
-                      marginTop: "-14px",
-                      marginRight: "-15px",
-                    }}
-                  >
-                    <span className="mr-1">{note?.comments.length}</span>
-
-                    <i className="pi pi-comments mt-1"></i>
-                  </p>
-                  <p
-                    className=" bg-danger"
-                    style={{
-                      width: "fit-content",
-                      height: "25px",
-                      color: "white",
-                      paddingLeft: "5px",
-                      paddingRight: "5px",
-                      borderRadius: "4px",
-                      marginTop: "-15px",
-                      marginRight: "-15px",
-                    }}
-                  >
-                    {note.tag}
-                  </p>
-                </div>
-
-                <h5 className="card-title" style={{ fontFamily: "poppins" }}>
-                  {note.name}
-                </h5>
-                <p className="card-text" style={{ fontFamily: "roboto" }}>
-                  Written By :{" "}
-                  <span style={{ fontFamily: "poppins", color: "grey" }}>
-                    {" "}
-                    {note.userEmail}
-                  </span>
-                </p>
+                <h5 className="card-title">{note.title}</h5>
+                <p className="card-text">Written By: {note.userEmail}</p>
+                <h6
+                  className="card-subtitle mb-2 text-muted"
+                  style={{ fontFamily: "poppins" }}
+                >
+                  {note.chapters[chapterIndex].name}
+                </h6>
                 <p className="card-text" style={{ fontFamily: "poppins" }}>
-                  {formattedDescription}
+                  {note.chapters[chapterIndex].story}
                 </p>
+                <div className="d-flex justify-content-between mt-3">
+                  <button
+                    className="btn btn-primary"
+                    onClick={goToPreviousChapter}
+                    disabled={chapterIndex === 0}
+                  >
+                    Previous Chapter
+                  </button>
+                  <button
+                    className="btn btn-primary"
+                    onClick={goToNextChapter}
+                    disabled={chapterIndex === note.chapters.length - 1}
+                  >
+                    Next Chapter
+                  </button>
+                </div>
               </div>
             </div>
+
             <div
-              className="car mb-5 bg-body-tertiary rounded"
-              style={{ width: "38rem" }}
+              className="card mb-5 bg-body-tertiary rounded sm"
+              style={{ width: "100%", height: "auto" }}
             >
               <div className="card-body">
-                <h5 className="card-title" style={{ fontFamily: "poppins" }}>
-                  Leave A comment
-                </h5>
+                <h5 className="card-title">Leave a Comment</h5>
                 <form onSubmit={handleSubmitComment}>
                   <div className="form-floating">
                     <textarea
@@ -181,47 +165,43 @@ const ReadMore = () => {
                       }}
                     />
                     <label htmlFor="floatingTextarea">Comment here...</label>
-                    <button
-                      className="btn btn-dark my-2 w-full"
-                      type="submit"
-                      style={{ fontFamily: "poppins" }}
-                    >
+                    <button className="btn btn-dark my-2 w-full" type="submit">
                       Submit
                     </button>
                   </div>
                 </form>
               </div>
             </div>
+
             <div
-              className="car mb-5 bg-body-tertiary rounded"
-              style={{ width: "38rem" }}
+              className="card mb-5 bg-body-tertiary rounded"
+              style={{ width: "100%", height: "auto" }}
             >
               <div className="card-body">
-                <h5 className="card-title" style={{ fontFamily: "poppins" }}>
-                  All Comments({note?.comments.length})
+                <h5 className="card-title">
+                  All Comments ({note.comments.length})
                 </h5>
-                {note.comments?.map((comment) => (
-                  <div key={comment._id}>
-                    <div className="card mb-1">
-                      <p style={{ fontFamily: "poppins", fontWeight: "200" }}>
-                        @{comment.email}
-                      </p>
-                      <p
-                        className="-mt-3 pl-2"
-                        style={{ fontFamily: "poppins" }}
-                      >
-                        {comment.text}
-                      </p>
+                {note.comments.map((comment) => (
+                  <div className="new" key={comment._id}>
+                    <div
+                      className="card mb-1"
+                      style={{ height: "100px !important" }}
+                    >
+                      <p style={{ fontWeight: "200" }}>_{comment.email}</p>
+                      <p className="-mt-3 pl-2">{comment.text}</p>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
-            <Toast ref={toast} />
           </>
         ) : (
-          <i className="pi pi-spin pi-spinner" style={{ fontSize: "2rem" }}></i>
+          <i
+            className="pi pi-spin pi-spinner d-flex justify-content-center align-items-center"
+            style={{ fontSize: "2rem" }}
+          ></i>
         )}
+        <Toast ref={toast} />
       </div>
     </>
   );

@@ -7,21 +7,21 @@ import { Toast } from "primereact/toast";
 const EditStory = () => {
   const { id } = useParams();
   const [note, setNote] = useState(null);
-
   const toast = useRef(null);
 
   const [formData, setFormData] = useState({
-    name: "",
-    description: "",
+    title: "",
+    chapters: [],
     tag: "",
   });
+
   useEffect(() => {
     const fetchNote = async () => {
       try {
         const authToken = localStorage.getItem("authToken");
         const response = await axios.post(
-          // Use GET method to fetch a single note by its ID
-          `https://storyzserver.vercel.app/api/notes/readnote/${id}`, // Use template literals to inject the ID into the URL
+          `https://storyzserver-nizam.vercel.app/api/notes/readnote/${id}`,
+          {},
           {
             headers: {
               "auth-token": authToken,
@@ -29,7 +29,15 @@ const EditStory = () => {
             },
           }
         );
-        setNote(response.data); // Set the fetched note in the state
+        setNote(response.data);
+        setFormData({
+          title: response.data.title,
+          chapters: response.data.chapters.map((chapter) => ({
+            name: chapter.name,
+            story: chapter.story,
+          })),
+          tag: response.data.tag,
+        });
       } catch (error) {
         console.log(error);
         toast.current.show({
@@ -42,12 +50,19 @@ const EditStory = () => {
 
     fetchNote();
   }, [id]);
+
+  const handleChapterChange = (index, field, value) => {
+    const updatedChapters = [...formData.chapters];
+    updatedChapters[index][field] = value;
+    setFormData({ ...formData, chapters: updatedChapters });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const authToken = localStorage.getItem("authToken");
       const response = await axios.put(
-        `https://storyzserver.vercel.app/api/notes/updatenote/${id}`,
+        `https://storyzserver-nizam.vercel.app/api/notes/updatenote/${id}`,
         formData,
         {
           headers: {
@@ -71,13 +86,10 @@ const EditStory = () => {
       });
     }
   };
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+
   return (
     <>
       <Toast ref={toast} />
-
       <Navbar />
       {!note ? (
         <div className="container d-flex justify-content-center align-items-center mt-5 pt-5">
@@ -91,38 +103,58 @@ const EditStory = () => {
               type="text"
               className="form-control"
               id="floatingInput"
-              name="name"
-              defaultValue={note?.name}
-              onChange={handleChange}
+              name="title"
+              value={formData.title}
+              onChange={(e) =>
+                setFormData({ ...formData, title: e.target.value })
+              }
             />
-            <label htmlFor="floatingInput">Titile Of The Story</label>
+            <label htmlFor="floatingInput">Title Of The Story</label>
           </div>
-          <div className="form-floating">
-            <textarea
-              type="text"
-              className="form-control"
-              id="floatingTextarea"
-              name="description"
-              defaultValue={note?.description}
-              onChange={handleChange}
-              style={{
-                height: "auto",
-                minHeight: "20rem",
-                whiteSpace: "pre-wrap",
-              }}
-            />
-            <label htmlFor="floatingTextarea">Story</label>
-          </div>
+          {formData.chapters.map((chapter, index) => (
+            <div key={index}>
+              <div className="form-floating">
+                <input
+                  type="text"
+                  className="form-control"
+                  id={`chapterName${index}`}
+                  value={chapter.name}
+                  onChange={(e) =>
+                    handleChapterChange(index, "name", e.target.value)
+                  }
+                />
+                <label htmlFor={`chapterName${index}`}>Chapter Name</label>
+              </div>
+              <div className="form-floating my-3">
+                <textarea
+                  type="text"
+                  className="form-control"
+                  id={`chapterStory${index}`}
+                  value={chapter.story}
+                  onChange={(e) =>
+                    handleChapterChange(index, "story", e.target.value)
+                  }
+                  style={{
+                    height: "auto",
+                    minHeight: "20rem",
+                    whiteSpace: "pre-wrap",
+                  }}
+                />
+                <label htmlFor={`chapterStory${index}`}>Story</label>
+              </div>
+            </div>
+          ))}
           <div className="form-floating my-3">
             <select
               className="form-select"
               id="floatingGenre"
-              name="tag" // Set name attribute to tag
-              onChange={handleChange}
-              value={formData.tag} // Set value to formData.tag
+              name="tag"
+              value={formData.tag}
+              onChange={(e) =>
+                setFormData({ ...formData, tag: e.target.value })
+              }
             >
-              <option defaultValue={note?.tag}>{note?.tag}</option>
-              <option value="Genaral">Default</option>
+              <option value="General">General</option>
               <option value="Fantasy">Fantasy</option>
               <option value="Science Fiction">Science Fiction</option>
               <option value="Mystery">Mystery</option>

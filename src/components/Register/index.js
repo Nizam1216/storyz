@@ -27,7 +27,7 @@ const Register = () => {
       }
 
       const response = await axios.post(
-        "https://storyzserver.vercel.app/api/auth/register",
+        "https://storyzserver-nizam.vercel.app/api/auth/register",
         formData
       );
       console.log(response.data);
