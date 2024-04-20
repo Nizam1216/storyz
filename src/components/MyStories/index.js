@@ -149,7 +149,7 @@ const MyStories = () => {
                             </p>
                           </div>
 
-                          <div className="d-flex flex-row justify-content-between gap-5 -ml-2 mt-5 pt-5 align-items-center dvv">
+                          <div className="d-flex flex-row justify-content-between gap-2  mt-5 pt-5 align-items-center dvv">
                             <Link
                               to={`/edit-story/${item._id}`}
                               className="pi pi-pencil mr-4 -ml-2 vhng "

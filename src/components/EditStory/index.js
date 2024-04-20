@@ -8,7 +8,7 @@ const EditStory = () => {
   const { id } = useParams();
   const [note, setNote] = useState(null);
   const toast = useRef(null);
-
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     chapters: [],
@@ -60,6 +60,7 @@ const EditStory = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true);
       const authToken = localStorage.getItem("authToken");
       const response = await axios.put(
         `https://storyzserver-nizam.vercel.app/api/notes/updatenote/${id}`,
@@ -84,7 +85,16 @@ const EditStory = () => {
         summary: "Error",
         detail: "Failed to Updated Story",
       });
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleAddChapter = () => {
+    setFormData({
+      ...formData,
+      chapters: [...formData.chapters, { name: "", story: "" }],
+    });
   };
 
   return (
@@ -144,6 +154,14 @@ const EditStory = () => {
               </div>
             </div>
           ))}
+          <button
+            className="btn btn-primary w-full my-3"
+            type="button"
+            onClick={handleAddChapter}
+            disabled={loading}
+          >
+            Add More
+          </button>
           <div className="form-floating my-3">
             <select
               className="form-select"
@@ -168,8 +186,16 @@ const EditStory = () => {
             </select>
             <label htmlFor="floatingGenre">Genre</label>
           </div>
-          <button className="w-100 btn btn-lg btn-primary my-3" type="submit">
-            Update Story
+          <button
+            className="w-100 btn btn-lg btn-primary my-3"
+            type="submit"
+            disabled={loading}
+          >
+            {loading ? (
+              <i className="pi pi-spin pi-spinner"></i>
+            ) : (
+              "Update Story"
+            )}{" "}
           </button>
         </form>
       )}

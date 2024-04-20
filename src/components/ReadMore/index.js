@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import Navbar from "../Navbar";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Toast } from "primereact/toast";
+import { Sidebar } from "primereact/sidebar";
+import { Button } from "primereact/button";
 import "../MyStories/mystories.css";
 const ReadMore = () => {
   const { id } = useParams();
@@ -10,7 +12,7 @@ const ReadMore = () => {
   const [chapterIndex, setChapterIndex] = useState(0); // State to track the current chapter index
   const [comment, setComment] = useState("");
   const toast = useRef(null);
-
+  const [visible, setVisible] = useState(false);
   useEffect(() => {
     const fetchNote = async () => {
       try {
@@ -100,10 +102,28 @@ const ReadMore = () => {
       setChapterIndex(chapterIndex + 1);
     }
   };
+  const handleChapterClick = (index) => {
+    setChapterIndex(index);
+    setVisible(false);
+  };
 
   return (
     <>
       <Navbar />
+      <div className="new">
+        <div className="card flex justify-content-center mt-2">
+          <Sidebar visible={visible} onHide={() => setVisible(false)}>
+            <h2>All Chapters</h2>
+            {note &&
+              note.chapters.map((chapter, index) => (
+                <p key={index} onClick={() => handleChapterClick(index)}>
+                  {index + 1}. {chapter.name}
+                </p>
+              ))}
+          </Sidebar>
+          <Button icon="pi pi-arrow-right" onClick={() => setVisible(true)} />
+        </div>
+      </div>
       <div className="container mt-5 anc">
         {note ? (
           <>
