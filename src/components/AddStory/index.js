@@ -10,16 +10,18 @@ const AddStory = () => {
     chapters: [{ name: "", story: "" }],
     image: null,
   });
+  const [loading, setLoading] = useState(false); // State to track loading status
   const toast = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true); // Set loading to true when submitting form
       const authToken = localStorage.getItem("authToken");
       const formDataToSend = {
         title: formData.title,
         tag: formData.tag,
-        chapters: formData.chapters, // Ensure chapters are sent correctly
+        chapters: formData.chapters,
         image: formData.image,
       };
       const response = await axios.post(
@@ -41,6 +43,8 @@ const AddStory = () => {
     } catch (error) {
       console.log(error);
       showToast("error", "Error", "Failed to Add Story");
+    } finally {
+      setLoading(false); // Set loading to false after form submission
     }
   };
 
@@ -167,8 +171,14 @@ const AddStory = () => {
           </select>
           <label htmlFor="floatingGenre">Genre</label>
         </div>
-        <button className="w-100 btn btn-lg btn-primary my-3" type="submit">
-          Add Story
+        {/* Show loader and disable button during loading */}
+        <button
+          className="w-100 btn btn-lg btn-primary my-3"
+          type="submit"
+          disabled={loading} // Disable button when loading
+        >
+          {loading ? <i className="pi pi-spin pi-spinner"></i> : "Add Story"}{" "}
+          {/* Show loader text when loading */}
         </button>
       </form>
     </>
