@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Navbar from "../Navbar";
 import axios from "axios";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Toast } from "primereact/toast";
 import { Sidebar } from "primereact/sidebar";
 import { Button } from "primereact/button";
@@ -13,6 +13,7 @@ const ReadMore = () => {
   const [comment, setComment] = useState("");
   const toast = useRef(null);
   const [visible, setVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const fetchNote = async () => {
       try {
@@ -40,6 +41,7 @@ const ReadMore = () => {
     e.preventDefault();
 
     try {
+      setLoading(true);
       if (localStorage.getItem("email")) {
         const authToken = localStorage.getItem("authToken");
         const response = await axios.post(
@@ -88,6 +90,8 @@ const ReadMore = () => {
         summary: "Error",
         detail: "Failed to add comment",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -186,7 +190,11 @@ const ReadMore = () => {
                     />
                     <label htmlFor="floatingTextarea">Comment here...</label>
                     <button className="btn btn-dark my-2 w-full" type="submit">
-                      Submit
+                      {loading ? (
+                        <i className="pi pi-spin pi-spinner"></i>
+                      ) : (
+                        "Submit"
+                      )}
                     </button>
                   </div>
                 </form>
