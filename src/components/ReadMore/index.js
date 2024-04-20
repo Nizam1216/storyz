@@ -189,11 +189,15 @@ const ReadMore = () => {
                       }}
                     />
                     <label htmlFor="floatingTextarea">Comment here...</label>
-                    <button className="btn btn-dark my-2 w-full" type="submit">
+                    <button
+                      className="btn btn-dark my-2 w-full"
+                      type="submit"
+                      disabled={loading}
+                    >
                       {loading ? (
                         <i className="pi pi-spin pi-spinner"></i>
                       ) : (
-                        "Submit"
+                        "Add Comment"
                       )}
                     </button>
                   </div>
